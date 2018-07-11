@@ -101,6 +101,13 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
     if (self.fd_willAppearInjectBlock) {
         self.fd_willAppearInjectBlock(self, animated);
     }
+    UIViewController *vc = self.navigationController.viewControllers.lastObject;
+    if (vc && !vc.fd_prefersNavigationBarHidden) {
+        if ([vc isKindOfClass:NSClassFromString(@"ZCChatController")] ||
+            [vc isKindOfClass:NSClassFromString(@"ZCUIBaseController")]) {
+            [self.navigationController setNavigationBarHidden:YES animated:NO];
+        }
+    }
 }
 
 - (void)fd_viewWillDisappear:(BOOL)animated
@@ -112,6 +119,10 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
         UIViewController *viewController = self.navigationController.viewControllers.lastObject;
         if (viewController && !viewController.fd_prefersNavigationBarHidden) {
             [self.navigationController setNavigationBarHidden:NO animated:NO];
+            if ([viewController isKindOfClass:NSClassFromString(@"ZCChatController")] ||
+                [viewController isKindOfClass:NSClassFromString(@"ZCUIBaseController")]) {
+                [self.navigationController setNavigationBarHidden:YES animated:NO];
+            }
         }
     });
 }
